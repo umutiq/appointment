@@ -6,23 +6,25 @@ use App\Models\Role;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
-class RoleTest extends TestCase {
+class RoleTest extends TestCase
+{
     /**
      * A basic feature test example.
      *
      * @return void
      */
-    public function test_list_roles() {
+    public function test_list_roles()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
         $this->token = $data->token;
         $this->user_id = $data->id;
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->get('/api/roles');
 
         $response
@@ -37,17 +39,18 @@ class RoleTest extends TestCase {
             );
     }
 
-    public function test_update_role_name_as_admin() {
+    public function test_update_role_name_as_admin()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
         $this->token = $data->token;
         $this->user_id = $data->id;
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->put('/api/roles/4', [
                 'name' => 'Chief Editor',
             ]);
@@ -55,22 +58,23 @@ class RoleTest extends TestCase {
         $response
             ->assertJson(
                 fn (AssertableJson $json) => $json->where('name', 'Chief Editor')
-                ->missing('error')
-                ->etc()
+                    ->missing('error')
+                    ->etc()
             );
     }
 
-    public function test_update_role_slug_as_admin() {
+    public function test_update_role_slug_as_admin()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
         $this->token = $data->token;
         $this->user_id = $data->id;
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->put('/api/roles/4', [
                 'slug' => 'chief-editor',
             ]);
@@ -78,22 +82,23 @@ class RoleTest extends TestCase {
         $response
             ->assertJson(
                 fn (AssertableJson $json) => $json->where('slug', 'chief-editor')
-                ->missing('error')
-                ->etc()
+                    ->missing('error')
+                    ->etc()
             );
     }
 
-    public function test_update_role_namd_and_slug_as_admin() {
+    public function test_update_role_namd_and_slug_as_admin()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
         $this->token = $data->token;
         $this->user_id = $data->id;
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->put('/api/roles/4', [
                 'name' => 'Editor X',
                 'slug' => 'editor-x',
@@ -102,23 +107,24 @@ class RoleTest extends TestCase {
         $response
             ->assertJson(
                 fn (AssertableJson $json) => $json->where('name', 'Editor X')
-                ->where('slug', 'editor-x')
-                ->missing('error')
-                ->etc()
+                    ->where('slug', 'editor-x')
+                    ->missing('error')
+                    ->etc()
             );
     }
 
-    public function test_update_admin_slug_as_admin_should_fail() {
+    public function test_update_admin_slug_as_admin_should_fail()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
         $this->token = $data->token;
         $this->user_id = $data->id;
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->put('/api/roles/1', [
                 'slug' => 'admin-x',
             ]);
@@ -126,22 +132,23 @@ class RoleTest extends TestCase {
         $response
             ->assertJson(
                 fn (AssertableJson $json) => $json
-                ->where('slug', 'admin')
-                ->etc()
+                    ->where('slug', 'admin')
+                    ->etc()
             );
     }
 
-    public function test_create_new_role_as_admin() {
+    public function test_create_new_role_as_admin()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
         $this->token = $data->token;
         $this->user_id = $data->id;
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->post('/api/roles', [
                 'name' => 'New Role',
                 'slug' => 'new-role',
@@ -150,23 +157,24 @@ class RoleTest extends TestCase {
         $response
             ->assertJson(
                 fn (AssertableJson $json) => $json->where('name', 'New Role')
-                ->where('slug', 'new-role')
-                ->missing('error')
-                ->etc()
+                    ->where('slug', 'new-role')
+                    ->missing('error')
+                    ->etc()
             );
     }
 
-    public function test_duplicate_role_will_not_be_created() {
+    public function test_duplicate_role_will_not_be_created()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
         $this->token = $data->token;
         $this->user_id = $data->id;
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->post('/api/roles', [
                 'name' => 'New Role',
                 'slug' => 'new-role',
@@ -175,14 +183,15 @@ class RoleTest extends TestCase {
         $response
             ->assertJson(
                 fn (AssertableJson $json) => $json->where('error', 1)
-                ->etc()
+                    ->etc()
             );
     }
 
-    public function test_delete_role_as_admin() {
+    public function test_delete_role_as_admin()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
@@ -191,20 +200,21 @@ class RoleTest extends TestCase {
 
         $newRole = Role::where('slug', 'new-role')->first();
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->delete("/api/roles/{$newRole->id}");
 
         $response
             ->assertJson(
                 fn (AssertableJson $json) => $json->where('error', 0)
-                ->has('message')
+                    ->has('message')
             );
     }
 
-    public function test_delete_admin_role_should_fail() {
+    public function test_delete_admin_role_should_fail()
+    {
         $response = $this->postJson('/api/login', [
             'email' => 'admin@iq.project',
-            'password' => 'iq',
+            'password' => 'iqmotion',
         ]);
 
         $data = json_decode($response->getContent());
@@ -213,13 +223,13 @@ class RoleTest extends TestCase {
 
         $newRole = Role::where('slug', 'admin')->first();
 
-        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->delete("/api/roles/{$newRole->id}");
 
         $response
             ->assertJson(
                 fn (AssertableJson $json) => $json->where('error', 1)
-                ->has('message')
+                    ->has('message')
             );
     }
 }
